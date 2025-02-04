@@ -54,6 +54,9 @@ uint32_t getHammingWeight(const uint8_t tmp[R_BITS], const uint32_t length)
     for (uint32_t i = 0; i < length; i++)
     {
         count+=tmp[i];
+        // if (tmp[i] != 0) {
+        //     printf("tmp:%d", tmp[i]);
+        // }
     }
 
     return count;
@@ -72,6 +75,7 @@ uint32_t isZero(uint8_t s[R_BITS])
     return 1;
 }
 
+// s + e \cdot H^T 가 계산되는 부분
 void recompute_syndrome(uint8_t s[R_BITS],
         const uint32_t pos,
         const uint32_t h0_compact[DV],
@@ -103,6 +107,7 @@ void recompute_syndrome(uint8_t s[R_BITS],
     }
 }
 
+// count number of 1's in the syndrome:
 uint32_t ctr(
         uint32_t h_compact_col[DV],
         int position,
@@ -262,12 +267,17 @@ int BGF_decoder(uint8_t e[R_BITS*2],
     uint8_t black[R_BITS*2] = {0};
     uint8_t gray[R_BITS*2] = {0};
 
+    uint32_t nT2 = getHammingWeight(s, R_BITS);
+    // printf("nT2 %d\n", nT2);
+
     for (int i = 1; i <= NbIter; i++)
     {
         memset(black, 0, R_BITS*2);
         memset(gray, 0, R_BITS*2);
 
         uint32_t T = floor(VAR_TH_FCT(getHammingWeight(s, R_BITS)));
+        uint32_t nT = getHammingWeight(s, R_BITS);
+        // printf("nT %d\n", nT);
 
         BFIter(e, black, gray, s, T, h0_compact, h1_compact, h0_compact_col, h1_compact_col);// 이부분이랑
 

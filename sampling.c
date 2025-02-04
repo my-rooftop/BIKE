@@ -88,7 +88,7 @@ void SET_BIT(uint8_t * tmp, int position) {
 
 status_t generate_sparse_rep_keccak(OUT uint8_t * r,
         IN  const uint32_t weight,
-        IN  const uint32_t len,
+        IN  const uint32_t len, //12324
         IN OUT shake256_prng_state_t *prf_state)
 {
     uint32_t rand_pos = 0;

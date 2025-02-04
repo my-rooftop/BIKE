@@ -92,7 +92,7 @@ typedef struct pk_buffer
     {
       struct
       {
-        uint8_t val[R_SIZE];
+        uint8_t val[R_SIZE]; //R_SIZE = 1541
       };
       uint8_t raw[R_SIZE];
     };
@@ -104,8 +104,8 @@ typedef struct ct_buffer
     {
       struct
       {
-        uint8_t val0[R_SIZE];
-        uint8_t val1[ELL_SIZE];
+        uint8_t val0[R_SIZE]; //R_SIZE = 1541
+        uint8_t val1[ELL_SIZE]; //ELL_SIZE = 32
       };
       uint8_t raw[R_SIZE+ELL_SIZE];
     };
@@ -121,12 +121,12 @@ typedef struct sk_buffer
     {
       struct
       {
-        uint8_t val0[R_SIZE];
-        uint8_t val1[R_SIZE];
+        uint8_t val0[R_SIZE]; //R_SIZE = 1541
+        uint8_t val1[R_SIZE]; //R_SIZE = 1541
       };
-      uint8_t raw[2*R_SIZE];
+      uint8_t raw[2*R_SIZE]; //2*R_SIZE = 3082
     };
-    uint8_t sigma[ELL_SIZE];
+    uint8_t sigma[ELL_SIZE]; //ELL_SIZE = 32
 } sk_buffer_t;
 
 typedef sk_buffer_t sk_t;

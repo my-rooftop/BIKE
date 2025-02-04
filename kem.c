@@ -177,8 +177,44 @@ int crypto_kem_keypair(OUT unsigned char *pk, OUT unsigned char *sk)
     DMSG("    Calculating the public key.\n");
 
     // pk = (1, h1*h0^(-1)), the first pk component (1) is implicitly assumed
+
+    
     ntl_mod_inv(inv_h0, h0);
-    ntl_mod_mul(l_pk->val, h1, inv_h0);
+    ntl_mod_mul(l_pk->val, h1, inv_h0); // h1 = sparse, inv_h0 = dense, similar as
+    
+    // inv_h0를 출력
+
+    // printf("sk h0: ");
+    // for (size_t i = 0; i < R_SIZE; i++) {
+    //     for (int j = 7; j >= 0; j--) {
+    //         printf("%d", (l_sk->val0[i] >> j) & 1); // 각 비트를 출력
+    //     }
+    //     printf(" "); // 각 바이트마다 구분을 위해 공백 추가
+    // }
+    // printf("\n");
+
+    // printf("sk h1: ");
+    // for (size_t i = 0; i < R_SIZE; i++) {
+    //     for (int j = 7; j >= 0; j--) {
+    //         printf("%d", (l_sk->val1[i] >> j) & 1); // 각 비트를 출력
+    //     }
+    //     printf(" "); // 각 바이트마다 구분을 위해 공백 추가
+    // }
+    // printf("\n");
+
+
+    // printf("pk h: ");
+    // for (size_t i = 0; i < R_SIZE; i++) {
+    //     for (int j = 7; j >= 0; j--) {
+    //         printf("%d", (l_pk->val[i] >> j) & 1); // 각 비트를 출력
+    //     }
+    //     printf(" "); // 각 바이트마다 구분을 위해 공백 추가
+    // }
+    // printf("\n");
+
+    // printf
+
+
 
     EDMSG("h0: "); print((uint64_t*)l_sk->val0, R_BITS);
     EDMSG("h1: "); print((uint64_t*)l_sk->val1, R_BITS);
@@ -216,7 +252,7 @@ int crypto_kem_enc(OUT unsigned char *ct,
     uint8_t m[ELL_SIZE] = {0};
 
     // error vector:
-    uint8_t e[N_SIZE] = {0};
+    uint8_t e[N_SIZE] = {0}; // N_SIZE = 2 * R_SIZE
     uint8_t e0[R_SIZE] = {0};
     uint8_t e1[R_SIZE] = {0};
 
@@ -228,10 +264,33 @@ int crypto_kem_enc(OUT unsigned char *ct,
 
     // (e0, e1) = H(m)
     functionH(e, m);
+    //e is sparse vector, weight 134ULL and len 12323 * 2,
     ntl_split_polynomial(e0, e1, e);
+    
+    // printf("e1: ");
+    // for (size_t i = 0; i < R_SIZE; i++) {
+    //     for (int j = 7; j >= 0; j--) {
+    //         printf("%d", (e1[i] >> j) & 1); // 각 비트를 출력
+    //     }
+    //     printf(" "); // 각 바이트마다 구분을 위해 공백 추가
+    // }
+    // printf("\n");
+
 
     // ct = (c0, c1) = (e0 + e1*h, L(e0, e1) \XOR m)
     ntl_mod_mul(l_ct->val0, e1, l_pk->val);
+
+    // printf("l_ct: ");
+    // for (size_t i = 0; i < R_SIZE; i++) {
+    //     for (int j = 7; j >= 0; j--) {
+    //         printf("%d", (l_ct->val0[i] >> j) & 1); // 각 비트를 출력
+    //     }
+    //     printf(" "); // 각 바이트마다 구분을 위해 공백 추가
+    // }
+    // printf("\n");
+
+
+
     ntl_add(l_ct->val0, l_ct->val0, e0);
     functionL(tmp, e);
     for (uint32_t i = 0; i < ELL_SIZE; i++)
